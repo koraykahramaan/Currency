@@ -30,7 +30,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
-    public List<Currency> getCurrencyList() {
+    public List<Currency> getCurrencyList(Boolean isReverse) {
         logger.info("getCurrencyList started");
         List<Currency> currencies = currencyRepository.findAll();
 
@@ -40,6 +40,9 @@ public class CurrencyServiceImpl implements CurrencyService {
             currencies = currencyMapper.currencyResponseToCurrencyList(currencyResponse);
             currencyRepository.saveAll(currencies);
             currencies = currencyRepository.findAll();
+            if(isReverse) {
+                return currenciesToTry(currencies);
+            }
             return currencies;
         }
         else {
@@ -49,13 +52,27 @@ public class CurrencyServiceImpl implements CurrencyService {
                 List<Currency> newCurrencies = currencyMapper.currencyResponseToCurrencyList(currencyResponse);
                 currencyRepository.saveAll(newCurrencies);
                 currencies = currencyRepository.findAll();
+                if(isReverse) {
+                    return currenciesToTry(currencies);
+                }
                 return currencies;
             }
             else {
                 logger.info("Update date has not come and list size is not 0, so returning from directly database.");
+                if(isReverse) {
+                    return currenciesToTry(currencies);
+                }
                 return currencies;
             }
         }
+    }
+
+    private List<Currency> currenciesToTry(List<Currency> currencies) {
+        logger.info("Currency values are reversing.");
+        for(Currency currency : currencies) {
+            currency.setCurrencyValue(1/currency.getCurrencyValue()); // 1 dolar 30 tl -- 1 tl 0.
+        }
+        return currencies;
     }
 
     @Override

@@ -21,7 +21,7 @@ public class CurrencyController {
 
     @GetMapping
     public String getCurrencyList(Model model) {
-        model.addAttribute("currencies",currencyService.getCurrencyList());
+        model.addAttribute("currencies",currencyService.getCurrencyList(false));
         return "currencies";
     }
 
@@ -29,5 +29,10 @@ public class CurrencyController {
     public String refreshCurrencyList(Model model) {
         model.addAttribute("currencies",currencyService.refreshCurrencyList());
         return "currencies";
+    }
+    @GetMapping("/currencyToTry")
+    public String currencyToTry(Model model) {
+        model.addAttribute("currencies",currencyService.getCurrencyList(true));
+        return "currencies_toTry";
     }
 }
