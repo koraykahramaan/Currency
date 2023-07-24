@@ -17,15 +17,14 @@
     </button>
 </nav>
 <div class="container">
-    <div class="row">
+    <div class="row pt-3">
         <h2>List of TRY to CURRENCY Table</h2>
     </div>
-    <div class="row">
-        <h3 style="color: mediumvioletred;">Last update of Table :  </h3>
-        <h3 th:text="${' ' + currencies.get(0).getTimeLastUpdateUtc()}" style="color: mediumvioletred;"></h3>
-    </div>
-    <div class="row">
-        <div class="col-lg-3">
+    <div class="row mt-5 mb-2">
+        <div class="col-9">
+            <h3 th:text="${'Last update of table :  ' + currencies.get(0).getTimeLastUpdateUtc()}" style="color: mediumvioletred;"></h3>
+        </div>
+        <div class="col-3">
             <a th:href="@{/api/v1/currency/currencyToTry}" class="btn btn-success btn-sm mb-3">Switch to CURRENCY to TRY table</a>
         </div>
     </div>

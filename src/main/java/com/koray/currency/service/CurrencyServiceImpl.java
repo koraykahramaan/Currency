@@ -32,14 +32,14 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Override
     public List<Currency> getCurrencyList(Boolean isReverse) {
         logger.info("getCurrencyList started");
-        List<Currency> currencies = currencyRepository.findAll();
+        List<Currency> currencies = currencyRepository.findAllByOrderByCurrencyValue();
 
         if(currencies.size() == 0) {
             logger.info("Currencies list size is 0.");
             CurrencyResponse currencyResponse = apiCallService.getCurrencyListFromApi();
             currencies = currencyMapper.currencyResponseToCurrencyList(currencyResponse);
             currencyRepository.saveAll(currencies);
-            currencies = currencyRepository.findAll();
+            currencies = currencyRepository.findAllByOrderByCurrencyValue();
             if(isReverse) {
                 return currenciesToTry(currencies);
             }
@@ -48,10 +48,13 @@ public class CurrencyServiceImpl implements CurrencyService {
         else {
             if(isDateInThePast(currencies.get(0).getTimeNextUpdateUtc())) {
                 logger.info("Currencies update time has came.");
+                logger.info("Next Update Date : " + currencies.get(0).getTimeNextUpdateUtc());
+                logger.info("Current date : " + new Date());
                 CurrencyResponse currencyResponse = apiCallService.getCurrencyListFromApi();
                 List<Currency> newCurrencies = currencyMapper.currencyResponseToCurrencyList(currencyResponse);
+                currencyRepository.deleteAll();
                 currencyRepository.saveAll(newCurrencies);
-                currencies = currencyRepository.findAll();
+                currencies = currencyRepository.findAllByOrderByCurrencyValue();
                 if(isReverse) {
                     return currenciesToTry(currencies);
                 }
